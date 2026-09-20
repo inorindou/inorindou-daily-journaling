@@ -46,13 +46,33 @@
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
     }
     .section-title {
       font-weight: bold;
       font-size: 1.1rem;
-      margin-bottom: 10px;
       color: #333333;
+    }
+    .btn-delete-item {
+      background: none;
+      border: none;
+      color: #ef4444;
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+    .btn-delete-item:hover {
+      background: #fee2e2;
     }
     textarea {
       width: 100%;
@@ -131,6 +151,44 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
+    /* 項目追加エリア */
+    .add-item-box {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .add-item-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .add-item-input:focus {
+      border-color: #3b82f6;
+    }
+    .btn-add-item {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-add-item:hover {
+      background-color: #059669;
+    }
+
     /* 送信ボタンエリア */
     .submit-area {
       text-align: center;
@@ -164,9 +222,9 @@
       margin-top: 40px;
       padding: 24px;
       background-color: #ffffff;
-      border: 2px solid #e0d8c8;
+      border: 1px solid #e2e8f0;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     .history-title {
@@ -218,8 +276,8 @@
       border-radius: 12px;
       border: 1px solid #e2e8f0;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      max-height: 800px; /* 枠の最大高さ */
-      overflow-y: auto;  /* 中身が溢れたら縦スクロール表示 */
+      max-height: 800px;
+      overflow-y: auto;
     }
 
     .display-header {
@@ -229,7 +287,7 @@
       margin-bottom: 12px;
       padding-bottom: 8px;
       border-bottom: 1px dashed #e2e8f0;
-      position: sticky;  /* スクロール時もヘッダーを上部に固定 */
+      position: sticky;
       top: 0;
       background-color: #ffffff;
       z-index: 10;
@@ -370,7 +428,7 @@
     </div>
   </div>
 
-  <!-- 三行日記 ＆ フリーメモの統合エリア -->
+  <!-- 三行日記 ＆ フリーメモの固定基本エリア -->
   <div class="section">
     <div style="margin-bottom: 20px;">
       <div class="section-title">📅 日付</div>
@@ -390,55 +448,13 @@
     〜 💡分けてコピペもしておくと、項目別で振り返れるようにもなりまーす（一番下）♪💡 〜
   </div>
 
-  <!-- 各項目エリア -->
-  <div class="section">
-    <div class="section-title">今日たべたもの（朝・昼・夕）</div>
-    <textarea id="meals" placeholder="朝：&#10;昼：&#10;夕："></textarea>
-  </div>
+  <!-- 動的カスタマイズ項目が挿入されるコンテナ -->
+  <div id="dynamicSectionsContainer"></div>
 
-  <div class="section">
-    <div class="section-title">今日のラッキー（これって宇宙や神様のサポートじゃない？的な？w）</div>
-    <textarea id="lucky" placeholder="・"></textarea>
-  </div>
-
-  <div class="section">
-    <div class="section-title">今日の楽しかったこと、ハッピーだったこと</div>
-    <div class="note-text">ウケた、くだらなくて、おもろかったこと、クスッとした</div>
-    <textarea id="happy" placeholder="・"></textarea>
-  </div>
-
-  <div class="section">
-    <div class="section-title">今日のナイスタ〜イム</div>
-    <div class="note-text">今日ゆっくりできた時間、今日ゆっくりできたこと、いい時間に感じられたこと、充実、ナイスタ〜イムw♪</div>
-    <textarea id="relax" placeholder="・"></textarea>
-  </div>
-
-  <div class="section">
-    <div class="section-title">今日の気づき・学び（問題点・自分のクセ・出来事・経験）</div>
-    <textarea id="learn" placeholder="・"></textarea>
-  </div>
-
-  <div class="section">
-    <div class="section-title">今日の成長／達成／トライ／やれたこと／1ミリでも成長できたこと</div>
-    <textarea id="growth" placeholder="・"></textarea>
-  </div>
-
-  <div class="section">
-    <div class="section-title">3年後のハッピー楽しいを高めていくために、がんばれたこと、トライできたこと</div>
-    <div class="note-text">たとえばスポーツでも今年ベテランを揃えて勝つことも大事だけど、3年後のために若手を育てる必要もありますよね。そんな感じで、今日のハッピー楽しいだけでなく『3年後のためにできたこと』も書いてみましょう！もちろん今日のハッピー楽しいを重ねていけばいいだけって考え方もあると思うので、もしあればで全然オーケー！w</div>
-    <textarea id="threeYears" placeholder="・"></textarea>
-  </div>
-
-  <div class="section">
-    <div class="section-title">今日の善行／自分褒め（誰かに何かしてあげられたことも含む）</div>
-    <div class="note-text">善行は自分で決めてオーケー、みたいな？w（ボクは自分で決めた善行を『おまもりBook』に書いてます）（←勝手なマイルールw😂🤣）</div>
-    <textarea id="goodDeed" placeholder="・"></textarea>
-  </div>
-
-  <div class="section">
-    <div class="section-title">今日の悪行の浄化（整理、調えw）</div>
-    <div class="note-text">ジャーナリングで悪行を外に書き出したことで浄化、整理、調えができますし、悪行は善行で帳消しにできますし、悪行をゆっくり振り返ったり、おまもりBookで整理することで浄化できたりしま〜す（←勝手なマイルール、その２w😂🤣）</div>
-    <textarea id="badDeed" placeholder="・"></textarea>
+  <!-- 項目追加エリア -->
+  <div class="add-item-box">
+    <input type="text" id="newItemTitle" class="add-item-input" placeholder="新しい項目名（例：今日の運動、読んだ本 など）">
+    <button class="btn-add-item" onclick="addNewItem()">＋ 項目を追加</button>
   </div>
 
   <!-- 送信ボタン -->
@@ -453,21 +469,13 @@
     <div class="filter-container">
       <label class="filter-label" for="categoryFilter">振り返りたい項目を選択</label>
       <select id="categoryFilter" class="filter-select" onchange="updateSingleDisplay()">
-        <option value="今日たべたもの">🍚 今日たべたもの</option>
-        <option value="今日のラッキー">🍀 今日のラッキー</option>
-        <option value="ハッピー">😄 楽しかったこと・ハッピー</option>
-        <option value="ゆっくりできた時間">☕ ナイスタ〜イム、いい時間</option>
-        <option value="気づき・学び（クセ）">💡 気づき・学び</option>
-        <option value="今日の成長">🌱 今日の達成、成長、トライ</option>
-        <option value="3年後エリア">🚀 3年後エリア</option>
-        <option value="今日の善行">👏 今日の善行、自分褒め</option>
-        <option value="今日の悪行">🧹 今日の悪行の整理</option>
+        <!-- JavaScriptで自動生成されます -->
       </select>
     </div>
 
     <div class="single-display-box">
       <div class="display-header">
-        <span class="display-category" id="displayCategory">🍚 今日たべたもの</span>
+        <span class="display-category" id="displayCategory">---</span>
         <span class="display-date" id="displayDate">読み込み中...</span>
       </div>
       <div class="display-body" id="displayBody">
@@ -497,6 +505,22 @@
   <!-- JavaScript -->
   <script>
     const STORAGE_KEY = 'nikkicho_gas_url';
+    const ITEMS_STORAGE_KEY = 'nikkicho_custom_items';
+
+    // デフォルトのこだわり項目定義
+    const DEFAULT_ITEMS = [
+      { id: "meals", title: "今日たべたもの（朝・昼・夕）", note: "", placeholder: "朝：\n昼：\n夕：" },
+      { id: "lucky", title: "今日のラッキー（これって宇宙や神様のサポートじゃない？的な？w）", note: "", placeholder: "・" },
+      { id: "happy", title: "今日の楽しかったこと、ハッピーだったこと", note: "ウケた、くだらなくて、おもろかったこと、クスッとした", placeholder: "・" },
+      { id: "relax", title: "今日のナイスタ〜イム", note: "今日ゆっくりできた時間、今日ゆっくりできたこと、いい時間に感じられたこと、充実、ナイスタ〜イムw♪", placeholder: "・" },
+      { id: "learn", title: "今日の気づき・学び（問題点・自分のクセ・出来事・経験）", note: "", placeholder: "・" },
+      { id: "growth", title: "今日の成長／達成／トライ／やれたこと／1ミリでも成長できたこと", note: "", placeholder: "・" },
+      { id: "threeYears", title: "3年後のハッピー楽しいを高めていくために、がんばれたこと、トライできたこと", note: "たとえばスポーツでも今年ベテランを揃えて勝つことも大事だけど、3年後のために若手を育てる必要もありますよね。そんな感じで、今日のハッピー楽しいだけでなく『3年後のためにできたこと』も書いてみましょう！もちろん今日のハッピー楽しいを重ねていけばいいだけって考え方もあると思うので、もしあればで全然オーケー！w", placeholder: "・" },
+      { id: "goodDeed", title: "今日の善行／自分褒め（誰かに何かしてあげられたことも含む）", note: "善行は自分で決めてオーケー、みたいな？w（ボクは自分で決めた善行を『おまもりBook』に書いてます）（←勝手なマイルールw😂🤣）", placeholder: "・" },
+      { id: "badDeed", title: "今日の悪行の浄化（整理、調えw）", note: "ジャーナリングで悪行を外に書き出したことで浄化、整理、調えができますし、悪行は善行で帳消しにできますし、悪行をゆっくり振り返ったり、おまもりBookで整理することで浄化できたりしま〜す（←勝手なマイルール、その２w😂🤣）", placeholder: "・" }
+    ];
+
+    let currentItems = [];
 
     // GAS URLの取得用関数
     function getGasUrl() {
@@ -522,14 +546,114 @@
       localStorage.setItem(STORAGE_KEY, url);
       closeSettings();
       alert("GAS URLを保存しました！✨");
-      fetchLatestData(); // 保存後にデータを再取得
+      fetchLatestData();
+    }
+
+    // 項目リストの読み込み＆ローカルストレージ同期
+    function loadItems() {
+      const saved = localStorage.getItem(ITEMS_STORAGE_KEY);
+      if (saved) {
+        try {
+          currentItems = JSON.parse(saved);
+        } catch (e) {
+          currentItems = [...DEFAULT_ITEMS];
+        }
+      } else {
+        currentItems = [...DEFAULT_ITEMS];
+      }
+      renderDynamicSections();
+      updateCategoryDropdown();
+    }
+
+    function saveItems() {
+      localStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(currentItems));
+      renderDynamicSections();
+      updateCategoryDropdown();
+      updateSingleDisplay();
+    }
+
+    // 入力フォームの動的レンダリング
+    function renderDynamicSections() {
+      const container = document.getElementById('dynamicSectionsContainer');
+      container.innerHTML = "";
+
+      currentItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'section';
+
+        let html = `
+          <div class="section-header">
+            <div class="section-title">${escapeHtml(item.title)}</div>
+            <button class="btn-delete-item" onclick="deleteItem(${index})">🗑️ 削除</button>
+          </div>
+        `;
+        if (item.note) {
+          html += `<div class="note-text">${escapeHtml(item.note)}</div>`;
+        }
+        html += `<textarea id="item_${index}" placeholder="${escapeHtml(item.placeholder || '・')}"></textarea>`;
+
+        div.innerHTML = html;
+        container.appendChild(div);
+      });
+    }
+
+    // 振り返り窓のドロップダウン更新
+    function updateCategoryDropdown() {
+      const select = document.getElementById('categoryFilter');
+      select.innerHTML = "";
+
+      currentItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.title;
+        opt.textContent = item.title;
+        select.appendChild(opt);
+      });
+    }
+
+    // 項目追加処理
+    function addNewItem() {
+      const input = document.getElementById('newItemTitle');
+      const title = input.value.trim();
+      if (!title) {
+        alert("新しい項目名を入力してください♪");
+        return;
+      }
+
+      currentItems.push({
+        id: "custom_" + Date.now(),
+        title: title,
+        note: "",
+        placeholder: "・"
+      });
+
+      input.value = "";
+      saveItems();
+      alert(`「${title}」を追加しました！✨`);
+    }
+
+    // 項目削除処理
+    function deleteItem(index) {
+      const target = currentItems[index];
+      if (confirm(`「${target.title}」を削除してもよろしいですか？`)) {
+        currentItems.splice(index, 1);
+        saveItems();
+      }
+    }
+
+    // エスケープ処理
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
     // 写真データをBase64形式で保持する変数
     let base64PhotoData = "";
     let photoFileName = "";
 
-    // 写真が選択された時の処理
     function handlePhotoSelect(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -539,7 +663,6 @@
       
       reader.onload = function(e) {
         base64PhotoData = e.target.result;
-        // プレビュー表示
         const preview = document.getElementById('photoPreview');
         preview.src = base64PhotoData;
         preview.style.display = 'block';
@@ -550,10 +673,8 @@
       reader.readAsDataURL(file);
     }
 
-    // スプレッドシートから読み込んだ全履歴データを保持する配列
     let allJournalLogs = [];
 
-    // GASから全履歴データを取得する関数
     async function fetchLatestData() {
       const GAS_URL = getGasUrl();
       if (!GAS_URL) {
@@ -565,20 +686,23 @@
       try {
         const response = await fetch(GAS_URL);
         allJournalLogs = await response.json();
-        updateSingleDisplay(); // 取得後に表示更新
+        updateSingleDisplay();
       } catch (err) {
         console.error("過去ログの取得に失敗しました:", err);
         document.getElementById('displayBody').textContent = "データの取得に失敗しました💦 GASのURLを確認してください。";
       }
     }
 
-    // 選択されたカテゴリの「過去ログ一覧（タイムライン）」を表示する関数
     function updateSingleDisplay() {
       const select = document.getElementById('categoryFilter');
-      const selectedCategory = select.value;
-      const categoryLabel = select.options[select.selectedIndex].text;
+      if (!select || select.options.length === 0) {
+        document.getElementById('displayDate').textContent = "全 0 件";
+        document.getElementById('displayBody').textContent = "項目がありません。";
+        return;
+      }
 
-      document.getElementById('displayCategory').textContent = categoryLabel;
+      const selectedCategory = select.value;
+      document.getElementById('displayCategory').textContent = selectedCategory;
 
       if (!Array.isArray(allJournalLogs) || allJournalLogs.length === 0) {
         document.getElementById('displayDate').textContent = "全 0 件";
@@ -586,7 +710,6 @@
         return;
       }
 
-      // 該当カテゴリに文字が書いてあるログだけを抽出（新しい順にするためreverse）
       const filteredLogs = allJournalLogs
         .filter(log => log[selectedCategory] && log[selectedCategory].trim() !== "")
         .reverse();
@@ -602,30 +725,26 @@
 
       displayDate.textContent = `全 ${filteredLogs.length} 件の履歴`;
 
-      // 過去のログを新しい順にリスト化して並べる（journalDate または date プロパティを参照）
       const logHtml = filteredLogs.map(log => {
         const logDate = log.journalDate || log.date || "日付なし";
         return `<div style="border-bottom: 1px dashed #ccc; padding: 8px 0; margin-bottom: 8px;">
           <strong style="color: #2563eb; font-size: 0.85em;">📅 ${logDate}</strong>
-          <div style="margin-top: 4px; white-space: pre-wrap;">${log[selectedCategory]}</div>
+          <div style="margin-top: 4px; white-space: pre-wrap;">${escapeHtml(log[selectedCategory])}</div>
         </div>`;
       }).join("");
 
       displayBody.innerHTML = logHtml;
     }
 
-    // フォーム入力欄のクリア関数
     function clearForm() {
-      const textareaIds = [
-        'threeLines', 'freeMemo', 'meals', 'lucky', 'happy',
-        'relax', 'learn', 'growth', 'threeYears', 'goodDeed', 'badDeed'
-      ];
-      textareaIds.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.value = '';
+      document.getElementById('threeLines').value = '';
+      document.getElementById('freeMemo').value = '';
+
+      currentItems.forEach((item, index) => {
+        const el = document.getElementById(`item_${index}`);
+        if (el) el.value = '';
       });
 
-      // 写真エリアのリセット
       base64PhotoData = "";
       photoFileName = "";
       document.getElementById('photoInput').value = "";
@@ -635,9 +754,7 @@
       document.getElementById('uploadPromptText').textContent = "タップして写真を選択（カメラ起動）";
     }
 
-    // ページ読み込み時の自動処理
     window.addEventListener('DOMContentLoaded', () => {
-      // 今日のお日付を設定
       const dateInput = document.getElementById('journalDate');
       if (dateInput) {
         const today = new Date();
@@ -647,16 +764,15 @@
         dateInput.value = `${yyyy}-${mm}-${dd}`;
       }
 
-      // URLが未設定の場合は設定モーダルを自動で開く
+      loadItems();
+
       if (!getGasUrl()) {
         openSettings();
       } else {
-        // 設定済みの場合は過去ログを取得
         fetchLatestData();
       }
     });
 
-    // スプレッドシート送信関数
     async function sendToSpreadsheet() {
       const GAS_URL = getGasUrl();
 
@@ -674,18 +790,15 @@
         journalDate: document.getElementById('journalDate').value,
         threeLines: document.getElementById('threeLines').value,
         freeMemo: document.getElementById('freeMemo').value,
-        meals: document.getElementById('meals').value,
-        lucky: document.getElementById('lucky').value,
-        happy: document.getElementById('happy').value,
-        relax: document.getElementById('relax').value,
-        learn: document.getElementById('learn').value,
-        growth: document.getElementById('growth').value,
-        threeYears: document.getElementById('threeYears').value,
-        goodDeed: document.getElementById('goodDeed').value,
-        badDeed: document.getElementById('badDeed').value,
         photoData: base64PhotoData,
         photoName: photoFileName
       };
+
+      // 動的カスタマイズ項目の値をセット
+      currentItems.forEach((item, index) => {
+        const el = document.getElementById(`item_${index}`);
+        payload[item.title] = el ? el.value : "";
+      });
 
       try {
         const response = await fetch(GAS_URL, {
@@ -694,10 +807,7 @@
         });
         alert("スプレッドシートへの保存が完了しました！✨");
         
-        // フォームをクリア
         clearForm();
-
-        // 保存成功後に履歴を再取得して振り返り窓を最新化！
         fetchLatestData();
 
       } catch (err) {
