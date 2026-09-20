@@ -602,10 +602,11 @@
 
       displayDate.textContent = `全 ${filteredLogs.length} 件の履歴`;
 
-      // 過去のログを新しい順にリスト化して並べる
+      // 過去のログを新しい順にリスト化して並べる（journalDate または date プロパティを参照）
       const logHtml = filteredLogs.map(log => {
+        const logDate = log.journalDate || log.date || "日付なし";
         return `<div style="border-bottom: 1px dashed #ccc; padding: 8px 0; margin-bottom: 8px;">
-          <strong style="color: #666; font-size: 0.85em;">📅 ${log.date}</strong>
+          <strong style="color: #2563eb; font-size: 0.85em;">📅 ${logDate}</strong>
           <div style="margin-top: 4px; white-space: pre-wrap;">${log[selectedCategory]}</div>
         </div>`;
       }).join("");
