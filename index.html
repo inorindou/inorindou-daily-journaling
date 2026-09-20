@@ -12,13 +12,13 @@
       margin: 0 auto;
       padding: 20px;
       background-color: #fcfbf7;
-      color: #333;
+      color: #333333;
     }
     h1 {
       text-align: center;
-      color: #2c3e50;
-      border-bottom: 2px solid #e2e8f0;
+      color: #333333;
       padding-bottom: 10px;
+      margin-bottom: 20px;
     }
     .section {
       background: #ffffff;
@@ -31,7 +31,7 @@
       font-weight: bold;
       font-size: 1.1rem;
       margin-bottom: 10px;
-      color: #34495e;
+      color: #333333;
     }
     .sub-group {
       margin-left: 10px;
@@ -39,7 +39,7 @@
     }
     .sub-title {
       font-weight: bold;
-      color: #7f8c8d;
+      color: #555555;
       margin-bottom: 4px;
     }
     textarea {
@@ -58,117 +58,403 @@
       border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
-    .special-box {
-      background-color: #fff7ed;
-      border: 1px solid #ffedd5;
+
+    /* 日付入力欄のスタイル */
+    .date-input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background-color: #ffffff;
+      color: #333333;
+      box-sizing: border-box;
+      outline: none;
+      font-family: inherit;
     }
-    .special-title {
-      color: #c2410c;
+    .date-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
+
     .note-text {
       font-size: 0.85rem;
       color: #64748b;
       margin-top: -4px;
       margin-bottom: 8px;
     }
+
+    .guide-box {
+      background-color: #fafafa;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      color: #333333;
+      font-weight: bold;
+      line-height: 1.6;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    /* 写真アップロード用のエリア */
+    .photo-upload-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      background-color: #fafafa;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .photo-upload-area:hover {
+      background-color: #f1f5f9;
+    }
+    .photo-preview {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* 送信ボタンエリア */
+    .submit-area {
+      text-align: center;
+      margin: 30px 0 40px 0;
+    }
+    .submit-btn {
+      background-color: #3b82f6;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      padding: 14px 40px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transition: transform 0.1s ease, background-color 0.2s ease;
+    }
+    .submit-btn:hover {
+      background-color: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    /* 過去ログの振り返り窓 */
+    .journal-history-window {
+      margin-top: 40px;
+      padding: 24px;
+      background-color: #fdfbf7;
+      border: 2px solid #e0d8c8;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .history-title {
+      font-size: 1.25rem;
+      color: #4a3e3d;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .filter-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .filter-label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .filter-select {
+      width: 100%;
+      max-width: 360px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #333333;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .filter-select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .single-display-box {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      min-height: 120px;
+    }
+
+    .display-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .display-category {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    .display-date {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .display-body {
+      font-size: 0.95rem;
+      color: #334155;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
 
   <h1>日気調ジャーナリング！w♪</h1>
+  <div style="text-align: center; margin-top: -10px; margin-bottom: 24px;">
+    <a href="https://note.com/inorindou/n/n892016d56629?app_launch=false" target="_blank" rel="noopener noreferrer" style="color: #333333; font-size: 0.9rem; font-weight: bold; text-decoration: underline;">
+      📖 日気調ジャーナリングの使い方・説明記事はこちら♪📖
+    </a>
+  </div>
 
-  <!-- 三行日記 -->
+  <!-- 写真アップロード枠 -->
   <div class="section">
-    <div class="section-title">三行日記（箇条書きでもOK）：</div>
-    <div class="sub-group">
-      <div class="sub-title">朝</div>
-      <textarea placeholder="・&#10;・"></textarea>
+    <div class="section-title">📸 今日の手書きノート（写真をパシャリ）</div>
+    <div class="note-text">今日手書きで書いたノートやメモの写真を貼り付けられます♪</div>
+    
+    <div class="photo-upload-area" onclick="document.getElementById('photoInput').click();">
+      <span style="font-size: 2rem;">📷</span>
+      <p style="margin: 8px 0 0 0; font-size: 0.95rem; color: #64748b;">
+        タップして写真を選択（カメラ起動）
+      </p>
+      <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+      <img id="photoPreview" class="photo-preview" alt="手書きノートのプレビュー">
     </div>
-    <div class="sub-group">
-      <div class="sub-title">昼</div>
-      <textarea placeholder="・&#10;・"></textarea>
+  </div>
+
+  <!-- 三行日記 ＆ フリーメモの統合エリア -->
+  <div class="section">
+    <div style="margin-bottom: 20px;">
+      <div class="section-title">📅 日付</div>
+      <input type="date" id="journalDate" class="date-input">
     </div>
-    <div class="sub-group">
-      <div class="sub-title">夕</div>
-      <textarea placeholder="・&#10;・"></textarea>
+
+    <div style="margin-bottom: 20px;">
+      <div class="section-title">三行日記（箇条書きでOK）</div>
+      <textarea id="threeLines" style="min-height: 180px;" placeholder="朝：&#10;・&#10;&#10;昼：&#10;・&#10;&#10;夕：&#10;・"></textarea>
     </div>
+
+    <div class="section-title">フリーメモ（なんでもOK。今日の気づき、学びとかも含めて？）</div>
+    <textarea id="freeMemo" style="min-height: 100px;" placeholder="・&#10;・"></textarea>
   </div>
 
-  <!-- フリーメモ -->
+  <div class="guide-box">
+    〜 💡分けてコピペもしておくと、項目別で振り返れるようにもなりまーす（一番下）♪💡 〜
+  </div>
+
+  <!-- 各項目エリア -->
   <div class="section">
-    <div class="section-title">フリーメモ（なんでもOK。今日の気づき、学びとかも含めて？）：</div>
-    <textarea placeholder="・&#10;・"></textarea>
+    <div class="section-title">今日たべたもの（朝・昼・夕）</div>
+    <textarea id="meals" placeholder="朝：&#10;昼：&#10;夕："></textarea>
   </div>
 
-  <!-- 今日たべたもの -->
   <div class="section">
-    <div class="section-title">今日たべたもの（朝・昼・夕）：</div>
-    <textarea placeholder="朝：&#10;昼：&#10;夕："></textarea>
+    <div class="section-title">今日のラッキー（これって宇宙や神様のサポートじゃない？的な？w）</div>
+    <textarea id="lucky" placeholder="・"></textarea>
   </div>
 
-  <!-- 今日のラッキー -->
   <div class="section">
-    <div class="section-title">今日のラッキー（宇宙や神様のサポートじゃない？的な？w）</div>
-    <textarea placeholder="・"></textarea>
+    <div class="section-title">今日の楽しかったこと、ハッピーだったこと</div>
+    <div class="note-text">ウケた、くだらなくて、おもろかったこと、クスッとした</div>
+    <textarea id="happy" placeholder="・"></textarea>
   </div>
 
-  <!-- 今日の楽しかったこと -->
   <div class="section">
-    <div class="section-title">今日の楽しかったこと、ハッピーだったこと・時間：</div>
-    <div class="note-text">（ウケた、くだらなくて、おもろかったこと、クスッとした）</div>
-    <textarea placeholder="・"></textarea>
+    <div class="section-title">今日のナイスタ〜イム</div>
+    <div class="note-text">今日ゆっくりできた時間、今日ゆっくりできたこと、いい時間に感じられたこと、充実、ナイスタ〜イムw♪</div>
+    <textarea id="relax" placeholder="・"></textarea>
   </div>
 
-  <!-- 今日ゆっくりできた時間 -->
   <div class="section">
-    <div class="section-title">今日ゆっくりできた時間、今日ゆっくりできたこと・いい時間に感じられたこと・充実・ナイスタ〜イムw。：</div>
-    <textarea placeholder="・"></textarea>
+    <div class="section-title">今日の気づき・学び（問題点・自分のクセ・出来事・経験）</div>
+    <textarea id="learn" placeholder="・"></textarea>
   </div>
 
-  <!-- 今日の気づき・学び（問題点） -->
   <div class="section">
-    <div class="section-title">今日の気づき・学び（問題点・自分のクセ）：</div>
-    <textarea placeholder="・"></textarea>
+    <div class="section-title">今日の成長／達成／トライ／やれたこと／1ミリでも成長できたこと</div>
+    <textarea id="growth" placeholder="・"></textarea>
   </div>
 
-  <!-- 今日の気づき・学び（出来事） -->
   <div class="section">
-    <div class="section-title">今日の気づき・学び（出来事・経験）：</div>
-    <textarea placeholder="・"></textarea>
+    <div class="section-title">3年後のハッピー楽しいを高めていくために、がんばれたこと、トライできたこと</div>
+    <div class="note-text">たとえばスポーツでも今年ベテランを揃えて勝つことも大事だけど、3年後のために若手を育てる必要もありますよね。そんな感じで、今日のハッピー楽しいだけでなく『3年後のためにできたこと』も書いてみましょう！もちろん今日のハッピー楽しいを重ねていけばいいだけって考え方もあると思うので、もしあればで全然オーケー！w</div>
+    <textarea id="threeYears" placeholder="・"></textarea>
   </div>
 
-  <!-- 今日の成長 -->
   <div class="section">
-    <div class="section-title">今日の成長／達成／トライ／やれたこと／1ミリでも成長できたこと：</div>
-    <textarea placeholder="・"></textarea>
+    <div class="section-title">今日の善行／自分褒め（誰かに何かしてあげられたことも含む）</div>
+    <div class="note-text">善行は自分で決めてオーケー、みたいな？w（ボクは自分で決めた善行を『おまもりBook』に書いてます）（←勝手なマイルールw😂🤣）</div>
+    <textarea id="goodDeed" placeholder="・"></textarea>
   </div>
 
-  <!-- 今日の自分褒め -->
   <div class="section">
-    <div class="section-title">今日の自分褒め：</div>
-    <textarea placeholder="・"></textarea>
+    <div class="section-title">今日の悪行の浄化（整理、調えw）</div>
+    <div class="note-text">ジャーナリングで悪行を外に書き出したことで浄化、整理、調えができますし、悪行は善行で帳消しにできますし、悪行をゆっくり振り返ったり、おまもりBookで整理することで浄化できたりしま〜す（←勝手なマイルール、その２w😂🤣）</div>
+    <textarea id="badDeed" placeholder="・"></textarea>
   </div>
 
-  <!-- 今日の善行 -->
-  <div class="section">
-    <div class="section-title">今日の善行（誰かに何かしてあげられたことも含む）：</div>
-    <textarea placeholder="・"></textarea>
+  <!-- 送信ボタン -->
+  <div class="submit-area">
+    <button class="submit-btn" onclick="sendToSpreadsheet()">スプレッドシートに保存する！✨</button>
   </div>
 
-  <!-- 今日の悪行 -->
-  <div class="section">
-    <div class="section-title">今日の悪行？の整理：</div>
-    <div class="note-text">（振り返ることで悪行はリセットされたりしますし、おまもりBookで善行に転換できたりします！w←勝手なマイルールw）</div>
-    <textarea placeholder="・"></textarea>
-  </div>
+  <!-- 過去ログの振り返り窓 -->
+  <section class="journal-history-window">
+    <h2 class="history-title">📖 過去ログの振り返り窓 📖</h2>
 
-  <!-- 3年後エリア -->
-  <div class="section special-box">
-    <div class="section-title special-title">【3年後の楽しい・リラックスを高めていくために。】</div>
-    <div class="note-text">（あくまで今日を楽しく生きるが優先なんで、あくまでできたらプラスくらいの感じで！）</div>
-    <div class="sub-title" style="margin-top: 10px;">3年後の楽しいを高めていくためにがんばった、トライできたこと：</div>
-    <textarea placeholder="・"></textarea>
-  </div>
+    <div class="filter-container">
+      <label class="filter-label" for="categoryFilter">振り返りたい項目を選択</label>
+      <select id="categoryFilter" class="filter-select" onchange="updateSingleDisplay()">
+        <option value="今日たべたもの">🍚 今日たべたもの</option>
+        <option value="今日のラッキー">🍀 今日のラッキー</option>
+        <option value="ハッピー">😄 楽しかったこと・ハッピー</option>
+        <option value="ゆっくりできた時間">☕ ナイスタ〜イム、いい時間</option>
+        <option value="気づき・学び（クセ）">💡 気づき・学び</option>
+        <option value="今日の成長">🌱 今日の達成、成長、トライ</option>
+        <option value="3年後エリア">🚀 3年後エリア</option>
+        <option value="今日の善行">👏 今日の善行、自分褒め</option>
+        <option value="今日の悪行">🧹 今日の悪行の整理</option>
+      </select>
+    </div>
+
+    <div class="single-display-box">
+      <div class="display-header">
+        <span class="display-category" id="displayCategory">🍀 今日のラッキー</span>
+        <span class="display-date" id="displayDate">最新データ (2026/09/18)</span>
+      </div>
+      <div class="display-body" id="displayBody">
+        欲しかった本が古本屋で半額で見つかった！めっちゃラッキー！
+      </div>
+    </div>
+  </section>
+
+  <!-- JavaScript -->
+  <script>
+    let base64PhotoData = "";
+    let photoFileName = "";
+
+    // 写真プレビュー＆データ変換機能
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        photoFileName = file.name;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('photoPreview').src = e.target.result;
+          document.getElementById('photoPreview').style.display = 'block';
+          base64PhotoData = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    const sampleData = {
+      "今日たべたもの": { date: "2026/09/18", text: "朝：トーストとコーヒー\n昼：ラーメン\n夕：ハンバーグ" },
+      "今日のラッキー": { date: "2026/09/18", text: "欲しかった本が古本屋で半額で見つかった！めっちゃラッキー！" },
+      "ハッピー": { date: "2026/09/16", text: "友達とくだらないことで爆笑した。最高のナイスタイム！" },
+      "ゆっくりできた時間": { date: "2026/09/18", text: "夜にお気に入りの紅茶を飲みながら15分ボーっとできた。" },
+      "気づき・学び（クセ）": { date: "2026/09/18", text: "焦ると確認を飛ばしがち。一呼吸おく癖をつける。" },
+      "今日の成長": { date: "2026/09/18", text: "気になっていた雑務を1つ片付けられた！1ミリ成長！" },
+      "3年後エリア": { date: "2026/09/18", text: "新しいスキルの本を10ページ読んだ！" },
+      "今日の善行": { date: "2026/09/17", text: "駅の階段で大きな荷物を持っている人に声をかけて一緒に運んだ。" },
+      "今日の悪行": { date: "2026/09/18", text: "ちょっとイラッとして語気が強くなった。次は深呼吸！" }
+    };
+
+    function updateSingleDisplay() {
+      const select = document.getElementById('categoryFilter');
+      const selectedCategory = select.value;
+      const categoryLabel = select.options[select.selectedIndex].text;
+      const data = sampleData[selectedCategory] || { date: "-", text: "まだログがありません。" };
+
+      document.getElementById('displayCategory').textContent = categoryLabel;
+      document.getElementById('displayDate').textContent = "最新データ (" + data.date + ")";
+      document.getElementById('displayBody').textContent = data.text;
+    }
+
+    // ページ読み込み時に今日の日付（日本時間）を自動入力
+    window.addEventListener('DOMContentLoaded', () => {
+      const dateInput = document.getElementById('journalDate');
+      if (dateInput) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${yyyy}-${mm}-${dd}`;
+      }
+    });
+
+    // スプレッドシート送信関数
+    async function sendToSpreadsheet() {
+      // ★デプロイ後に取得したGASのウェブアプリURLを貼り付け
+      const GAS_URL = "https://script.google.com/macros/s/AKfycbxZGQ-8DZqmZ0YtNFr5xMBrA19h1a0jeDtU8Erf3zlJHQp4EKEyJ7OfbVoVRw6ieUbQ/exec";
+
+      // URLが未設定（空っぽ）の場合だけ警告を出す
+      if (!GAS_URL) {
+        alert("GASのURLが設定されていません！URLを確認してください♪");
+        return;
+      }
+
+      const payload = {
+        journalDate: document.getElementById('journalDate').value,
+        threeLines: document.getElementById('threeLines').value,
+        freeMemo: document.getElementById('freeMemo').value,
+        meals: document.getElementById('meals').value,
+        lucky: document.getElementById('lucky').value,
+        happy: document.getElementById('happy').value,
+        relax: document.getElementById('relax').value,
+        learn: document.getElementById('learn').value,
+        growth: document.getElementById('growth').value,
+        threeYears: document.getElementById('threeYears').value,
+        goodDeed: document.getElementById('goodDeed').value,
+        badDeed: document.getElementById('badDeed').value,
+        photoData: base64PhotoData,
+        photoName: photoFileName
+      };
+
+      try {
+        const response = await fetch(GAS_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        alert("スプレッドシートへの保存が完了しました！✨");
+      } catch (err) {
+        alert("保存に失敗しました💦 GASの設定を確認してください。");
+        console.error(err);
+      }
+    }
+  </script>
 
 </body>
 </html>
