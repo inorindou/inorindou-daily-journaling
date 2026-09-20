@@ -606,6 +606,20 @@
       const select = document.getElementById('categoryFilter');
       select.innerHTML = "";
 
+      // ★1. 「三行日記」と「フリーメモ」を固定で追加！
+      const fixedCategories = [
+        { value: "threeLines", label: "三行日記" },
+        { value: "freeMemo", label: "フリーメモ" }
+      ];
+
+      fixedCategories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.value;
+        opt.textContent = cat.label;
+        select.appendChild(opt);
+      });
+
+      // ★2. カスタマイズ項目を追加
       currentItems.forEach(item => {
         const opt = document.createElement('option');
         opt.value = item.title;
