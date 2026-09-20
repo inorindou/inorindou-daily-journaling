@@ -249,7 +249,7 @@
       <p style="margin: 8px 0 0 0; font-size: 0.95rem; color: #64748b;">
         タップして写真を選択（カメラ起動）
       </p>
-      <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+      <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoSelect(event)">
       <img id="photoPreview" class="photo-preview" alt="手書きノートのプレビュー">
     </div>
   </div>
@@ -351,60 +351,95 @@
 
     <div class="single-display-box">
       <div class="display-header">
-        <span class="display-category" id="displayCategory">🍀 今日のラッキー</span>
-        <span class="display-date" id="displayDate">最新データ (2026/09/18)</span>
+        <span class="display-category" id="displayCategory">🍚 今日たべたもの</span>
+        <span class="display-date" id="displayDate">読み込み中...</span>
       </div>
       <div class="display-body" id="displayBody">
-        欲しかった本が古本屋で半額で見つかった！めっちゃラッキー！
+        データを取得しています...
       </div>
     </div>
   </section>
 
   <!-- JavaScript -->
   <script>
+    // 写真データをBase64形式で保持する変数
     let base64PhotoData = "";
     let photoFileName = "";
 
-    // 写真プレビュー＆データ変換機能
-    function previewImage(event) {
+    // 写真が選択された時の処理
+    function handlePhotoSelect(event) {
       const file = event.target.files[0];
-      if (file) {
-        photoFileName = file.name;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('photoPreview').src = e.target.result;
-          document.getElementById('photoPreview').style.display = 'block';
-          base64PhotoData = e.target.result;
-        };
-        reader.readAsDataURL(file);
+      if (!file) return;
+
+      photoFileName = file.name;
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        base64PhotoData = e.target.result;
+        // プレビュー表示
+        const preview = document.getElementById('photoPreview');
+        preview.src = base64PhotoData;
+        preview.style.display = 'block';
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    // スプレッドシートから読み込んだ全履歴データを保持する配列
+    let allJournalLogs = [];
+
+    // GASから全履歴データを取得する関数
+    async function fetchLatestData() {
+      const GAS_URL = "https://script.google.com/macros/s/AKfycbxZGQ-8DZqmZ0YtNFr5xMBrA19h1a0jeDtU8Erf3zlJHQp4EKEyJ7OfbVoVRw6ieUbQ/exec";
+      if (!GAS_URL) return;
+
+      try {
+        const response = await fetch(GAS_URL);
+        allJournalLogs = await response.json();
+        updateSingleDisplay(); // 取得後に表示更新
+      } catch (err) {
+        console.error("過去ログの取得に失敗しました:", err);
       }
     }
 
-    const sampleData = {
-      "今日たべたもの": { date: "2026/09/18", text: "朝：トーストとコーヒー\n昼：ラーメン\n夕：ハンバーグ" },
-      "今日のラッキー": { date: "2026/09/18", text: "欲しかった本が古本屋で半額で見つかった！めっちゃラッキー！" },
-      "ハッピー": { date: "2026/09/16", text: "友達とくだらないことで爆笑した。最高のナイスタイム！" },
-      "ゆっくりできた時間": { date: "2026/09/18", text: "夜にお気に入りの紅茶を飲みながら15分ボーっとできた。" },
-      "気づき・学び（クセ）": { date: "2026/09/18", text: "焦ると確認を飛ばしがち。一呼吸おく癖をつける。" },
-      "今日の成長": { date: "2026/09/18", text: "気になっていた雑務を1つ片付けられた！1ミリ成長！" },
-      "3年後エリア": { date: "2026/09/18", text: "新しいスキルの本を10ページ読んだ！" },
-      "今日の善行": { date: "2026/09/17", text: "駅の階段で大きな荷物を持っている人に声をかけて一緒に運んだ。" },
-      "今日の悪行": { date: "2026/09/18", text: "ちょっとイラッとして語気が強くなった。次は深呼吸！" }
-    };
-
+    // 選択されたカテゴリの「過去ログ一覧（タイムライン）」を表示する関数
     function updateSingleDisplay() {
       const select = document.getElementById('categoryFilter');
       const selectedCategory = select.value;
       const categoryLabel = select.options[select.selectedIndex].text;
-      const data = sampleData[selectedCategory] || { date: "-", text: "まだログがありません。" };
 
       document.getElementById('displayCategory').textContent = categoryLabel;
-      document.getElementById('displayDate').textContent = "最新データ (" + data.date + ")";
-      document.getElementById('displayBody').textContent = data.text;
+
+      // 該当カテゴリに文字が書いてあるログだけを抽出（新しい順にするためreverse）
+      const filteredLogs = allJournalLogs
+        .filter(log => log[selectedCategory] && log[selectedCategory].trim() !== "")
+        .reverse();
+
+      const displayBody = document.getElementById('displayBody');
+      const displayDate = document.getElementById('displayDate');
+
+      if (filteredLogs.length === 0) {
+        displayDate.textContent = "全 0 件";
+        displayBody.textContent = "まだこの項目の記録はありません。";
+        return;
+      }
+
+      displayDate.textContent = `全 ${filteredLogs.length} 件の履歴`;
+
+      // 過去のログを新しい順にリスト化して並べる
+      const logHtml = filteredLogs.map(log => {
+        return `<div style="border-bottom: 1px dashed #ccc; padding: 8px 0; margin-bottom: 8px;">
+          <strong style="color: #666; font-size: 0.85em;">📅 ${log.date}</strong>
+          <div style="margin-top: 4px; white-space: pre-wrap;">${log[selectedCategory]}</div>
+        </div>`;
+      }).join("");
+
+      displayBody.innerHTML = logHtml;
     }
 
-    // ページ読み込み時に今日の日付（日本時間）を自動入力
+    // ページ読み込み時の自動処理
     window.addEventListener('DOMContentLoaded', () => {
+      // 今日のお日付を設定
       const dateInput = document.getElementById('journalDate');
       if (dateInput) {
         const today = new Date();
@@ -413,14 +448,15 @@
         const dd = String(today.getDate()).padStart(2, '0');
         dateInput.value = `${yyyy}-${mm}-${dd}`;
       }
+
+      // ページが開いた時に自動でGASから過去ログを取得
+      fetchLatestData();
     });
 
     // スプレッドシート送信関数
     async function sendToSpreadsheet() {
-      // ★デプロイ後に取得したGASのウェブアプリURLを貼り付け
       const GAS_URL = "https://script.google.com/macros/s/AKfycbxZGQ-8DZqmZ0YtNFr5xMBrA19h1a0jeDtU8Erf3zlJHQp4EKEyJ7OfbVoVRw6ieUbQ/exec";
 
-      // URLが未設定（空っぽ）の場合だけ警告を出す
       if (!GAS_URL) {
         alert("GASのURLが設定されていません！URLを確認してください♪");
         return;
@@ -449,6 +485,10 @@
           body: JSON.stringify(payload)
         });
         alert("スプレッドシートへの保存が完了しました！✨");
+        
+        // 保存成功後に履歴を再取得して振り返り窓を最新化！
+        fetchLatestData();
+
       } catch (err) {
         alert("保存に失敗しました💦 GASの設定を確認してください。");
         console.error(err);
