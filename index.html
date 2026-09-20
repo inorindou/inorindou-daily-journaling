@@ -14,6 +14,27 @@
       background-color: #fcfbf7;
       color: #333333;
     }
+    header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+    .btn-settings {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #555555;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+    .btn-settings:hover {
+      background-color: #f1f5f9;
+      color: #333333;
+    }
     h1 {
       text-align: center;
       color: #333333;
@@ -228,9 +249,101 @@
       line-height: 1.6;
       white-space: pre-wrap;
     }
+
+    /* GAS設定モーダルのスタイル */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 480px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #333333;
+    }
+
+    .modal-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    .modal-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #475569;
+      font-weight: bold;
+    }
+
+    .btn-primary-modal {
+      background: #3b82f6;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+
+  <!-- GAS設定ボタンエリア -->
+  <header>
+    <button class="btn-settings" onclick="openSettings()">⚙️ GAS設定</button>
+  </header>
 
   <h1>日気調ジャーナリングw♪</h1>
   <div style="text-align: center; margin-top: -10px; margin-bottom: 24px;">
@@ -360,8 +473,55 @@
     </div>
   </section>
 
+  <!-- GAS URL設定モーダル -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-title">⚙️ GAS URL設定</div>
+      <div class="modal-desc">
+        ご自身のGoogle Apps Script（Webアプリ）のURLを入力してください♪<br>
+        URLはお使いのブラウザ内にのみ安全に保存されます。
+      </div>
+      <div style="margin-bottom: 16px;">
+        <input type="text" id="gasUrlInput" class="modal-input" placeholder="https://script.google.com/macros/s/.../exec">
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-secondary" onclick="closeSettings()">キャンセル</button>
+        <button class="btn-primary-modal" onclick="saveSettings()">保存する</button>
+      </div>
+    </div>
+  </div>
+
   <!-- JavaScript -->
   <script>
+    const STORAGE_KEY = 'nikkicho_gas_url';
+
+    // GAS URLの取得用関数
+    function getGasUrl() {
+      return localStorage.getItem(STORAGE_KEY) || "";
+    }
+
+    // モーダル操作関数
+    function openSettings() {
+      document.getElementById('gasUrlInput').value = getGasUrl();
+      document.getElementById('settingsModal').classList.add('active');
+    }
+
+    function closeSettings() {
+      document.getElementById('settingsModal').classList.remove('active');
+    }
+
+    function saveSettings() {
+      const url = document.getElementById('gasUrlInput').value.trim();
+      if (!url) {
+        alert("GASのURLを入力してください♪");
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, url);
+      closeSettings();
+      alert("GAS URLを保存しました！✨");
+      fetchLatestData(); // 保存後にデータを再取得
+    }
+
     // 写真データをBase64形式で保持する変数
     let base64PhotoData = "";
     let photoFileName = "";
@@ -390,8 +550,12 @@
 
     // GASから全履歴データを取得する関数
     async function fetchLatestData() {
-      const GAS_URL = "https://script.google.com/macros/s/AKfycbwPJUSkTAhqc0TcnzReOKfnm8zkhMA5uzUi4PfQOyyAQVHkP-EioQXQ5TVcskq3xuhG/exec";
-      if (!GAS_URL) return;
+      const GAS_URL = getGasUrl();
+      if (!GAS_URL) {
+        document.getElementById('displayDate').textContent = "未設定";
+        document.getElementById('displayBody').textContent = "右上の「⚙️ GAS設定」からご自身のGAS URLを設定してください♪";
+        return;
+      }
 
       try {
         const response = await fetch(GAS_URL);
@@ -399,6 +563,7 @@
         updateSingleDisplay(); // 取得後に表示更新
       } catch (err) {
         console.error("過去ログの取得に失敗しました:", err);
+        document.getElementById('displayBody').textContent = "データの取得に失敗しました💦 GASのURLを確認してください。";
       }
     }
 
@@ -409,6 +574,12 @@
       const categoryLabel = select.options[select.selectedIndex].text;
 
       document.getElementById('displayCategory').textContent = categoryLabel;
+
+      if (!Array.isArray(allJournalLogs) || allJournalLogs.length === 0) {
+        document.getElementById('displayDate').textContent = "全 0 件";
+        document.getElementById('displayBody').textContent = "まだこの項目の記録はありません。";
+        return;
+      }
 
       // 該当カテゴリに文字が書いてあるログだけを抽出（新しい順にするためreverse）
       const filteredLogs = allJournalLogs
@@ -449,16 +620,22 @@
         dateInput.value = `${yyyy}-${mm}-${dd}`;
       }
 
-      // ページが開いた時に自動でGASから過去ログを取得
-      fetchLatestData();
+      // URLが未設定の場合は設定モーダルを自動で開く
+      if (!getGasUrl()) {
+        openSettings();
+      } else {
+        // 設定済みの場合は過去ログを取得
+        fetchLatestData();
+      }
     });
 
     // スプレッドシート送信関数
     async function sendToSpreadsheet() {
-      const GAS_URL = "https://script.google.com/macros/s/AKfycbwPJUSkTAhqc0TcnzReOKfnm8zkhMA5uzUi4PfQOyyAQVHkP-EioQXQ5TVcskq3xuhG/exec";
+      const GAS_URL = getGasUrl();
 
       if (!GAS_URL) {
-        alert("GASのURLが設定されていません！URLを確認してください♪");
+        alert("GASのURLが設定されていません！右上の「⚙️ GAS設定」から登録してください♪");
+        openSettings();
         return;
       }
 
