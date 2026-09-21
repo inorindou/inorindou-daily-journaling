@@ -78,7 +78,7 @@
 
     textarea {
       width: 100%;
-      min-height: 70px;
+      min-height: 100px;
       padding: 10px;
       border: 1px solid #cbd5e1;
       border-radius: 8px;
@@ -596,7 +596,8 @@
         if (item.note) {
           html += `<div class="note-text">${escapeHtml(item.note)}</div>`;
         }
-        html += `<textarea id="item_${index}" placeholder="${escapeHtml(item.placeholder || '・')}"></textarea>`;
+      /* ★ここに style="min-height: 100px;" を付け加えました！ */
+        html += `<textarea id="item_${index}" style="min-height: 100px;" placeholder="${escapeHtml(item.placeholder || '・')}"></textarea>`;
 
         div.innerHTML = html;
         container.appendChild(div);
