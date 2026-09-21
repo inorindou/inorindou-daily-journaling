@@ -821,14 +821,22 @@
       });
 
       try {
-        const response = await fetch(GAS_URL, {
+        await fetch(GAS_URL, {
           method: "POST",
+          mode: "no-cors", // ★これが必要です！
+          headers: {
+            "Content-Type": "text/plain" // GASで安全に受け取るためのヘッダー
+          },
           body: JSON.stringify(payload)
         });
+        
         alert("スプレッドシートへの保存が完了しました！✨");
         
         clearForm();
-        fetchLatestData();
+        // no-cors送信後、GAS側の処理完了を少し待ってから過去ログを取得
+        setTimeout(() => {
+          fetchLatestData();
+        }, 1500);
 
       } catch (err) {
         alert("保存に失敗しました💦 GASの設定を確認してください。");
