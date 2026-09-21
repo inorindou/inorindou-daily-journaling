@@ -748,7 +748,7 @@
       const logHtml = filteredLogs.map(log => {
         const logDate = log.journalDate || log.date || "日付なし";
         return `<div style="border-bottom: 1px dashed #ccc; padding: 8px 0; margin-bottom: 8px;">
-          <strong style="color: #2563eb; font-size: 0.85em;">📅 ${logDate}</strong>
+          <strong style="color: #1a1a1a; font-size: 0.85em;">📅 ${logDate}</strong>
           <div style="margin-top: 4px; white-space: pre-wrap;">${escapeHtml(log[selectedCategory])}</div>
         </div>`;
       }).join("");
