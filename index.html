@@ -101,15 +101,15 @@
       gap: 12px;
     }
     
-    /* ボタンにテキストを表示させるためのスタイル */
+    /* ボタンにテキストを表示させるためのスタイル（余白を最小化） */
     .editor-wrapper .ql-toolbar button {
       width: auto !important;
-      padding: 2px 8px !important;
+      padding: 2px 6px !important;
       display: inline-flex !important;
       align-items: center !important;
-      gap: 4px;
       font-size: 0.85rem !important;
       color: #4b5563 !important;
+      font-weight: normal !important;
     }
     .editor-wrapper .ql-toolbar button:hover {
       color: #1d4ed8 !important;
@@ -456,7 +456,7 @@
 
   <!-- 写真アップロード枠 -->
   <div class="section">
-    <div class="section-title">📸 今日の手書きノート（写真をパシャリ）</div>
+    <div class="section-title">📸今日の手書きノート（写真をパシャリ）📸</div>
     <div class="note-text">今日手書きで書いたノートやメモの写真を貼り付けられます♪</div>
     
     <div class="photo-upload-area" onclick="document.getElementById('photoInput').click();">
@@ -583,13 +583,13 @@
     function customizeToolbarLabels(wrapperElement) {
       const boldBtn = wrapperElement.querySelector('.ql-bold');
       if (boldBtn && !boldBtn.dataset.labeled) {
-        boldBtn.innerHTML += '<span style="font-weight: bold; margin-left: 2px;">（太字）</span>';
+        boldBtn.innerHTML += '<span style="font-weight: normal;">（太字）</span>';
         boldBtn.dataset.labeled = "true";
       }
       
       const linkBtn = wrapperElement.querySelector('.ql-link');
       if (linkBtn && !linkBtn.dataset.labeled) {
-        linkBtn.innerHTML += '<span style="margin-left: 2px;">（リンク化）</span>';
+        linkBtn.innerHTML += '<span>（リンク化）</span>';
         linkBtn.dataset.labeled = "true";
       }
     }
