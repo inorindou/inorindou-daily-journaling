@@ -101,25 +101,13 @@
       gap: 12px;
     }
     
-    /* ボタンとテキストの太字・強調を解除するスタイル */
     .editor-wrapper .ql-toolbar button {
-      width: auto !important;
-      padding: 2px 6px !important;
+      width: 28px !important;
+      height: 28px !important;
+      padding: 3px !important;
       display: inline-flex !important;
       align-items: center !important;
-      font-size: 0.85rem !important;
-      color: #4b5563 !important;
-      font-weight: normal !important;
-    }
-    .editor-wrapper .ql-toolbar button:hover {
-      color: #1d4ed8 !important;
-    }
-
-    /* SVGアイコン（Bマークやリンクマーク）の太字強調を解除 */
-    .editor-wrapper .ql-toolbar button svg path,
-    .editor-wrapper .ql-toolbar button svg line {
-      stroke-width: 1 !important;
-      font-weight: normal !important;
+      justify-content: center !important;
     }
 
     .editor-wrapper .ql-container {
@@ -586,21 +574,6 @@
     let quillFreeMemo = null;
     let dynamicQuillInstances = {};
 
-    // ツールバーのボタンにテキスト（（太字）、（リンク化））を追加する共通関数
-    function customizeToolbarLabels(wrapperElement) {
-      const boldBtn = wrapperElement.querySelector('.ql-bold');
-      if (boldBtn && !boldBtn.dataset.labeled) {
-        boldBtn.innerHTML += '<span style="font-weight: normal;">（太字）</span>';
-        boldBtn.dataset.labeled = "true";
-      }
-      
-      const linkBtn = wrapperElement.querySelector('.ql-link');
-      if (linkBtn && !linkBtn.dataset.labeled) {
-        linkBtn.innerHTML += '<span>（リンク化）</span>';
-        linkBtn.dataset.labeled = "true";
-      }
-    }
-
     // GAS URLの取得用関数
     function getGasUrl() {
       return localStorage.getItem(STORAGE_KEY) || "";
@@ -635,14 +608,12 @@
         placeholder: '朝：\n・\n\n昼：\n・\n\n夕：\n・',
         modules: { toolbar: quillToolbarOptions }
       });
-      customizeToolbarLabels(document.querySelector('#threeLinesEditor').parentNode);
 
       quillFreeMemo = new Quill('#freeMemoEditor', {
         theme: 'snow',
         placeholder: '・\n・',
         modules: { toolbar: quillToolbarOptions }
       });
-      customizeToolbarLabels(document.querySelector('#freeMemoEditor').parentNode);
     }
 
     // 項目リストの読み込み＆ローカルストレージ同期
@@ -704,8 +675,6 @@
           placeholder: item.placeholder || '・',
           modules: { toolbar: quillToolbarOptions }
         });
-
-        customizeToolbarLabels(document.querySelector(`#${editorId}`).parentNode);
 
         dynamicQuillInstances[index] = quillInstance;
       });
