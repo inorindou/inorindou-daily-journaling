@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>メディテーション デイリージャーナリング</title>
+  
+  <!-- Quill.js CSS -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
@@ -64,7 +68,7 @@
     .btn-delete-item {
       background: transparent;
       border: none;
-      color: #1a1a1a; /* 基本のテキスト色と同じダークグレー */
+      color: #1a1a1a;
       font-size: 0.8rem;
       cursor: pointer;
       padding: 4px 8px;
@@ -72,25 +76,35 @@
       transition: color 0.2s ease, background 0.2s ease;
     }
     .btn-delete-item:hover {
-      background: #f1f5f9; /* マウスをのせた時にさりげなくグレー背景 */
+      background: #f1f5f9;
       color: #000000;
     }
 
-    textarea {
-      width: 100%;
-      min-height: 100px;
-      padding: 10px;
-      border: 1px solid #cbd5e1;
+    /* Quillエディタ関連のカスタムCSS */
+    .editor-container {
+      background-color: #ffffff;
       border-radius: 8px;
-      box-sizing: border-box;
+      border: 1px solid #cbd5e1;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .editor-container .ql-toolbar {
+      border: none !important;
+      border-bottom: 1px solid #cbd5e1 !important;
+      background-color: #f8fafc;
+    }
+    .editor-container .ql-container {
+      border: none !important;
       font-size: 0.95rem;
       font-family: inherit;
-      resize: vertical;
     }
-    textarea:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    .editor-container .ql-editor {
+      min-height: 120px;
+      line-height: 1.6;
+    }
+    .editor-container .ql-editor.ql-blank::before {
+      font-style: normal;
+      color: #94a3b8;
     }
 
     /* 日付入力欄のスタイル */
@@ -129,7 +143,7 @@
       font-weight: bold;
       line-height: 1.6;
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-      text-align: center; /* ★この行を追加！ */
+      text-align: center;
     }
 
     /* 写真アップロード用のエリア */
@@ -176,10 +190,10 @@
     .add-item-input:focus {
       border-color: #3b82f6;
     }
-.btn-add-item {
-      background-color: #ffffff; /* ★背景色を白 */
+    .btn-add-item {
+      background-color: #ffffff;
       color: #1a1a1a;
-      border: 1px solid #cbd5e1; /* ★枠線をやさしいグレーに変更 */
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       padding: 10px 18px;
       font-size: 0.9rem;
@@ -198,9 +212,9 @@
       margin: 30px 0 40px 0;
     }
     .submit-btn {
-      background-color: #ffffff; /* ★背景色を白 */
+      background-color: #ffffff;
       color: #1a1a1a;
-      border: 1px solid #cbd5e1; /* ★枠線をやさしいグレーに変更 */
+      border: 1px solid #cbd5e1;
       font-size: 1.1rem;
       font-weight: bold;
       padding: 14px 40px;
@@ -313,7 +327,6 @@
       font-size: 0.95rem;
       color: #334155;
       line-height: 1.6;
-      white-space: pre-wrap;
     }
 
     /* GAS設定モーダルのスタイル */
@@ -442,11 +455,15 @@
 
     <div style="margin-bottom: 20px;">
       <div class="section-title">三行日記（箇条書きでOK）</div>
-      <textarea id="threeLines" style="min-height: 180px;" placeholder="朝：&#10;・&#10;&#10;昼：&#10;・&#10;&#10;夕：&#10;・"></textarea>
+      <div class="editor-container">
+        <div id="threeLinesEditor"></div>
+      </div>
     </div>
 
     <div class="section-title">フリーメモ</div>
-    <textarea id="freeMemo" style="min-height: 100px;" placeholder="・&#10;・"></textarea>
+    <div class="editor-container">
+      <div id="freeMemoEditor"></div>
+    </div>
   </div>
 
   <div class="guide-box">
@@ -508,10 +525,22 @@
     </div>
   </div>
 
+  <!-- Quill.js JS -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
   <!-- JavaScript -->
   <script>
     const STORAGE_KEY = 'nikkicho_gas_url';
     const ITEMS_STORAGE_KEY = 'nikkicho_custom_items';
+
+    // Quillのツールバー設定
+    const quillToolbarOptions = [
+      [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['clean']
+    ];
 
     // デフォルトのこだわり項目定義
     const DEFAULT_ITEMS = [
@@ -527,6 +556,9 @@
     ];
 
     let currentItems = [];
+    let quillThreeLines = null;
+    let quillFreeMemo = null;
+    let dynamicQuillInstances = {};
 
     // GAS URLの取得用関数
     function getGasUrl() {
@@ -553,6 +585,21 @@
       closeSettings();
       alert("GAS URLを保存しました！✨");
       fetchLatestData();
+    }
+
+    // 初期化関数
+    function initFixedEditors() {
+      quillThreeLines = new Quill('#threeLinesEditor', {
+        theme: 'snow',
+        placeholder: '朝：\n・\n\n昼：\n・\n\n夕：\n・',
+        modules: { toolbar: quillToolbarOptions }
+      });
+
+      quillFreeMemo = new Quill('#freeMemoEditor', {
+        theme: 'snow',
+        placeholder: '・\n・',
+        modules: { toolbar: quillToolbarOptions }
+      });
     }
 
     // 項目リストの読み込み＆ローカルストレージ同期
@@ -582,6 +629,7 @@
     function renderDynamicSections() {
       const container = document.getElementById('dynamicSectionsContainer');
       container.innerHTML = "";
+      dynamicQuillInstances = {};
 
       currentItems.forEach((item, index) => {
         const div = document.createElement('div');
@@ -596,11 +644,25 @@
         if (item.note) {
           html += `<div class="note-text">${escapeHtml(item.note)}</div>`;
         }
-      /* ★ここに style="min-height: 100px;" を付け加えました！ */
-        html += `<textarea id="item_${index}" style="min-height: 100px;" placeholder="${escapeHtml(item.placeholder || '・')}"></textarea>`;
+        
+        const editorId = `editor_item_${index}`;
+        html += `
+          <div class="editor-container">
+            <div id="${editorId}"></div>
+          </div>
+        `;
 
         div.innerHTML = html;
         container.appendChild(div);
+
+        // Quillエディタを生成
+        const quillInstance = new Quill(`#${editorId}`, {
+          theme: 'snow',
+          placeholder: item.placeholder || '・',
+          modules: { toolbar: quillToolbarOptions }
+        });
+
+        dynamicQuillInstances[index] = quillInstance;
       });
     }
 
@@ -609,7 +671,7 @@
       const select = document.getElementById('categoryFilter');
       select.innerHTML = "";
 
-      // ★1. 「三行日記」と「フリーメモ」を固定で追加！
+      // 1. 「三行日記」と「フリーメモ」を固定で追加
       const fixedCategories = [
         { value: "threeLines", label: "三行日記" },
         { value: "freeMemo", label: "フリーメモ" }
@@ -622,7 +684,7 @@
         select.appendChild(opt);
       });
 
-      // ★2. カスタマイズ項目を追加
+      // 2. カスタマイズ項目を追加
       currentItems.forEach(item => {
         const opt = document.createElement('option');
         opt.value = item.title;
@@ -661,8 +723,9 @@
       }
     }
 
-    // エスケープ処理
+    // エスケープ処理（安全な表示用）
     function escapeHtml(str) {
+      if (!str) return "";
       return str
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -732,7 +795,13 @@
       }
 
       const filteredLogs = allJournalLogs
-        .filter(log => log[selectedCategory] && log[selectedCategory].trim() !== "")
+        .filter(log => {
+          const val = log[selectedCategory];
+          if (!val) return false;
+          // 空タグのみや空白を除外するチェック
+          const cleanVal = val.replace(/<[^>]*>/g, '').trim();
+          return cleanVal !== "";
+        })
         .reverse();
 
       const displayBody = document.getElementById('displayBody');
@@ -748,9 +817,16 @@
 
       const logHtml = filteredLogs.map(log => {
         const logDate = log.journalDate || log.date || "日付なし";
-        return `<div style="border-bottom: 1px dashed #ccc; padding: 8px 0; margin-bottom: 8px;">
-          <strong style="color: #1a1a1a; font-size: 0.85em;">📅 ${logDate}</strong>
-          <div style="margin-top: 4px; white-space: pre-wrap;">${escapeHtml(log[selectedCategory])}</div>
+        let contentHtml = log[selectedCategory] || "";
+        
+        // 旧データ等でプレーンテキストの場合は改行を<br>へ変換
+        if (!contentHtml.includes("<p>") && !contentHtml.includes("<div>")) {
+          contentHtml = contentHtml.replace(/\n/g, "<br>");
+        }
+
+        return `<div style="border-bottom: 1px dashed #ccc; padding: 12px 0; margin-bottom: 8px;">
+          <strong style="color: #1a1a1a; font-size: 0.85em;">📅 ${escapeHtml(logDate)}</strong>
+          <div style="margin-top: 6px;">${contentHtml}</div>
         </div>`;
       }).join("");
 
@@ -758,12 +834,13 @@
     }
 
     function clearForm() {
-      document.getElementById('threeLines').value = '';
-      document.getElementById('freeMemo').value = '';
+      if (quillThreeLines) quillThreeLines.setText('');
+      if (quillFreeMemo) quillFreeMemo.setText('');
 
-      currentItems.forEach((item, index) => {
-        const el = document.getElementById(`item_${index}`);
-        if (el) el.value = '';
+      Object.keys(dynamicQuillInstances).forEach(key => {
+        if (dynamicQuillInstances[key]) {
+          dynamicQuillInstances[key].setText('');
+        }
       });
 
       base64PhotoData = "";
@@ -785,6 +862,7 @@
         dateInput.value = `${yyyy}-${mm}-${dd}`;
       }
 
+      initFixedEditors();
       loadItems();
 
       if (!getGasUrl()) {
@@ -793,6 +871,14 @@
         fetchLatestData();
       }
     });
+
+    // Quillの内容をHTML文字列（または空文字）として取得
+    function getQuillHtml(quillInstance) {
+      if (!quillInstance) return "";
+      const text = quillInstance.getText().trim();
+      if (!text) return "";
+      return quillInstance.root.innerHTML;
+    }
 
     async function sendToSpreadsheet() {
       const GAS_URL = getGasUrl();
@@ -809,24 +895,24 @@
 
       const payload = {
         journalDate: document.getElementById('journalDate').value,
-        threeLines: document.getElementById('threeLines').value,
-        freeMemo: document.getElementById('freeMemo').value,
+        threeLines: getQuillHtml(quillThreeLines),
+        freeMemo: getQuillHtml(quillFreeMemo),
         photoData: base64PhotoData,
         photoName: photoFileName
       };
 
-      // 動的カスタマイズ項目の値をセット
+      // 動的カスタマイズ項目のリッチテキスト値をセット
       currentItems.forEach((item, index) => {
-        const el = document.getElementById(`item_${index}`);
-        payload[item.title] = el ? el.value : "";
+        const qInstance = dynamicQuillInstances[index];
+        payload[item.title] = getQuillHtml(qInstance);
       });
 
       try {
         await fetch(GAS_URL, {
           method: "POST",
-          mode: "no-cors", // ★これが必要です！
+          mode: "no-cors",
           headers: {
-            "Content-Type": "text/plain" // GASで安全に受け取るためのヘッダー
+            "Content-Type": "text/plain"
           },
           body: JSON.stringify(payload)
         });
@@ -834,7 +920,6 @@
         alert("スプレッドシートへの保存が完了しました！✨");
         
         clearForm();
-        // no-cors送信後、GAS側の処理完了を少し待ってから過去ログを取得
         setTimeout(() => {
           fetchLatestData();
         }, 1500);
@@ -844,7 +929,7 @@
         console.error(err);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = "スプレッドシートに保存する！✨";
+        submitBtn.textContent = "＋ スプレッドシートに保存する♪";
       }
     }
   </script>
