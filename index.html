@@ -80,7 +80,7 @@
       color: #000000;
     }
 
-    /* Quillエディタを全体と同じ背景色（白）になじませる設定 */
+    /* Quillエディタ＆ツールバーの見た目カスタマイズ */
     .editor-wrapper {
       border: 1px solid #cbd5e1;
       border-radius: 8px;
@@ -95,14 +95,31 @@
     .editor-wrapper .ql-toolbar {
       border: none !important;
       border-bottom: 1px solid #f1f5f9 !important;
-      background-color: #ffffff; /* ツールバー背景も全体と同じ白に設定 */
+      background-color: #ffffff;
       padding: 6px 8px;
+      display: flex;
+      gap: 12px;
     }
+    
+    /* ボタンにテキストを表示させるためのスタイル */
+    .editor-wrapper .ql-toolbar button {
+      width: auto !important;
+      padding: 2px 8px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px;
+      font-size: 0.85rem !important;
+      color: #4b5563 !important;
+    }
+    .editor-wrapper .ql-toolbar button:hover {
+      color: #1d4ed8 !important;
+    }
+
     .editor-wrapper .ql-container {
       border: none !important;
       font-size: 0.95rem;
       font-family: inherit;
-      background-color: #ffffff; /* エディタ本体も白 */
+      background-color: #ffffff;
     }
     .editor-wrapper .ql-editor {
       min-height: 100px;
@@ -539,7 +556,7 @@
     const STORAGE_KEY = 'nikkicho_gas_url';
     const ITEMS_STORAGE_KEY = 'nikkicho_custom_items';
 
-    // Quillのツールバー設定（★「太字」と「リンク化」の2つの機能だけに絞りました！）
+    // Quillのツールバー設定
     const quillToolbarOptions = [
       ['bold', 'link']
     ];
@@ -561,6 +578,21 @@
     let quillThreeLines = null;
     let quillFreeMemo = null;
     let dynamicQuillInstances = {};
+
+    // ツールバーのボタンにテキスト（（太字）、（リンク化））を追加する共通関数
+    function customizeToolbarLabels(wrapperElement) {
+      const boldBtn = wrapperElement.querySelector('.ql-bold');
+      if (boldBtn && !boldBtn.dataset.labeled) {
+        boldBtn.innerHTML += '<span style="font-weight: bold; margin-left: 2px;">（太字）</span>';
+        boldBtn.dataset.labeled = "true";
+      }
+      
+      const linkBtn = wrapperElement.querySelector('.ql-link');
+      if (linkBtn && !linkBtn.dataset.labeled) {
+        linkBtn.innerHTML += '<span style="margin-left: 2px;">（リンク化）</span>';
+        linkBtn.dataset.labeled = "true";
+      }
+    }
 
     // GAS URLの取得用関数
     function getGasUrl() {
@@ -596,12 +628,14 @@
         placeholder: '朝：\n・\n\n昼：\n・\n\n夕：\n・',
         modules: { toolbar: quillToolbarOptions }
       });
+      customizeToolbarLabels(document.querySelector('#threeLinesEditor').parentNode);
 
       quillFreeMemo = new Quill('#freeMemoEditor', {
         theme: 'snow',
         placeholder: '・\n・',
         modules: { toolbar: quillToolbarOptions }
       });
+      customizeToolbarLabels(document.querySelector('#freeMemoEditor').parentNode);
     }
 
     // 項目リストの読み込み＆ローカルストレージ同期
@@ -663,6 +697,8 @@
           placeholder: item.placeholder || '・',
           modules: { toolbar: quillToolbarOptions }
         });
+
+        customizeToolbarLabels(document.querySelector(`#${editorId}`).parentNode);
 
         dynamicQuillInstances[index] = quillInstance;
       });
