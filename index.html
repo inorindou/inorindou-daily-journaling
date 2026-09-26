@@ -80,29 +80,33 @@
       color: #000000;
     }
 
-    /* Quillエディタ関連のカスタムCSS */
-    .editor-container {
-      background-color: #ffffff;
-      border-radius: 8px;
+    /* Quillエディタを元のtextarea風になじませる設定 */
+    .editor-wrapper {
       border: 1px solid #cbd5e1;
+      border-radius: 8px;
       overflow: hidden;
-      margin-top: 6px;
+      background-color: #ffffff;
+      margin-top: 4px;
     }
-    .editor-container .ql-toolbar {
+    .editor-wrapper:focus-within {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .editor-wrapper .ql-toolbar {
       border: none !important;
-      border-bottom: 1px solid #cbd5e1 !important;
-      background-color: #f8fafc;
+      border-bottom: 1px solid #e2e8f0 !important;
+      background-color: #fafafa;
     }
-    .editor-container .ql-container {
+    .editor-wrapper .ql-container {
       border: none !important;
       font-size: 0.95rem;
       font-family: inherit;
     }
-    .editor-container .ql-editor {
-      min-height: 120px;
+    .editor-wrapper .ql-editor {
+      min-height: 100px;
       line-height: 1.6;
     }
-    .editor-container .ql-editor.ql-blank::before {
+    .editor-wrapper .ql-editor.ql-blank::before {
       font-style: normal;
       color: #94a3b8;
     }
@@ -455,13 +459,13 @@
 
     <div style="margin-bottom: 20px;">
       <div class="section-title">三行日記（箇条書きでOK）</div>
-      <div class="editor-container">
+      <div class="editor-wrapper">
         <div id="threeLinesEditor"></div>
       </div>
     </div>
 
     <div class="section-title">フリーメモ</div>
-    <div class="editor-container">
+    <div class="editor-wrapper">
       <div id="freeMemoEditor"></div>
     </div>
   </div>
@@ -533,12 +537,12 @@
     const STORAGE_KEY = 'nikkicho_gas_url';
     const ITEMS_STORAGE_KEY = 'nikkicho_custom_items';
 
-    // Quillのツールバー設定
+    // Quillのツールバー設定（★'link'を追加してハイパーリンク対応にしました！）
     const quillToolbarOptions = [
-      [{ 'header': [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
+      ['bold', 'italic', 'underline'],
       [{ 'color': [] }, { 'background': [] }],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link'],
       ['clean']
     ];
 
@@ -587,7 +591,7 @@
       fetchLatestData();
     }
 
-    // 初期化関数
+    // 固定エディタの初期化
     function initFixedEditors() {
       quillThreeLines = new Quill('#threeLinesEditor', {
         theme: 'snow',
@@ -647,7 +651,7 @@
         
         const editorId = `editor_item_${index}`;
         html += `
-          <div class="editor-container">
+          <div class="editor-wrapper">
             <div id="${editorId}"></div>
           </div>
         `;
@@ -671,7 +675,6 @@
       const select = document.getElementById('categoryFilter');
       select.innerHTML = "";
 
-      // 1. 「三行日記」と「フリーメモ」を固定で追加
       const fixedCategories = [
         { value: "threeLines", label: "三行日記" },
         { value: "freeMemo", label: "フリーメモ" }
@@ -684,7 +687,6 @@
         select.appendChild(opt);
       });
 
-      // 2. カスタマイズ項目を追加
       currentItems.forEach(item => {
         const opt = document.createElement('option');
         opt.value = item.title;
@@ -723,7 +725,7 @@
       }
     }
 
-    // エスケープ処理（安全な表示用）
+    // エスケープ処理
     function escapeHtml(str) {
       if (!str) return "";
       return str
@@ -798,7 +800,6 @@
         .filter(log => {
           const val = log[selectedCategory];
           if (!val) return false;
-          // 空タグのみや空白を除外するチェック
           const cleanVal = val.replace(/<[^>]*>/g, '').trim();
           return cleanVal !== "";
         })
@@ -819,7 +820,6 @@
         const logDate = log.journalDate || log.date || "日付なし";
         let contentHtml = log[selectedCategory] || "";
         
-        // 旧データ等でプレーンテキストの場合は改行を<br>へ変換
         if (!contentHtml.includes("<p>") && !contentHtml.includes("<div>")) {
           contentHtml = contentHtml.replace(/\n/g, "<br>");
         }
@@ -872,7 +872,7 @@
       }
     });
 
-    // Quillの内容をHTML文字列（または空文字）として取得
+    // Quillの入力内容を取得（空文字判定付き）
     function getQuillHtml(quillInstance) {
       if (!quillInstance) return "";
       const text = quillInstance.getText().trim();
@@ -901,7 +901,7 @@
         photoName: photoFileName
       };
 
-      // 動的カスタマイズ項目のリッチテキスト値をセット
+      // 動的カスタマイズ項目の値をセット
       currentItems.forEach((item, index) => {
         const qInstance = dynamicQuillInstances[index];
         payload[item.title] = getQuillHtml(qInstance);
