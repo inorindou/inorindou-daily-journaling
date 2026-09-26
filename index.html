@@ -80,7 +80,7 @@
       color: #000000;
     }
 
-    /* Quillエディタを元のtextarea風になじませる設定 */
+    /* Quillエディタを全体と同じ背景色（白）になじませる設定 */
     .editor-wrapper {
       border: 1px solid #cbd5e1;
       border-radius: 8px;
@@ -94,13 +94,15 @@
     }
     .editor-wrapper .ql-toolbar {
       border: none !important;
-      border-bottom: 1px solid #e2e8f0 !important;
-      background-color: #fafafa;
+      border-bottom: 1px solid #f1f5f9 !important;
+      background-color: #ffffff; /* ツールバー背景も全体と同じ白に設定 */
+      padding: 6px 8px;
     }
     .editor-wrapper .ql-container {
       border: none !important;
       font-size: 0.95rem;
       font-family: inherit;
+      background-color: #ffffff; /* エディタ本体も白 */
     }
     .editor-wrapper .ql-editor {
       min-height: 100px;
@@ -537,13 +539,9 @@
     const STORAGE_KEY = 'nikkicho_gas_url';
     const ITEMS_STORAGE_KEY = 'nikkicho_custom_items';
 
-    // Quillのツールバー設定（★'link'を追加してハイパーリンク対応にしました！）
+    // Quillのツールバー設定（★「太字」と「リンク化」の2つの機能だけに絞りました！）
     const quillToolbarOptions = [
-      ['bold', 'italic', 'underline'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link'],
-      ['clean']
+      ['bold', 'link']
     ];
 
     // デフォルトのこだわり項目定義
