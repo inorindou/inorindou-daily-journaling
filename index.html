@@ -80,7 +80,7 @@
       color: #000000;
     }
 
-    /* Quillエディタ＆ツールバーの控えめカスタマイズ */
+/* Quillエディタ＆ツールバーの控えめカスタマイズ */
     .editor-wrapper {
       border: 1px solid #cbd5e1;
       border-radius: 8px;
@@ -103,8 +103,8 @@
     }
     
     .editor-wrapper .ql-toolbar button {
-      width: 24px !important;
-      height: 24px !important;
+      width: 28px !important;
+      height: 28px !important;
       padding: 2px !important;
       display: inline-flex !important;
       align-items: center !important;
@@ -112,31 +112,31 @@
       border-radius: 4px;
     }
 
-    /* SVGアイコンのサイズと色の主張を抑える */
+    /* SVGアイコンのサイズ（18px）と中間色（#64748b）調整 */
     .editor-wrapper .ql-toolbar button svg {
-      width: 15px !important;
-      height: 15px !important;
+      width: 18px !important;
+      height: 18px !important;
     }
 
     .editor-wrapper .ql-toolbar button svg path,
     .editor-wrapper .ql-toolbar button svg line {
-      stroke: #94a3b8 !important;
+      stroke: #64748b !important; /* 薄すぎず濃すぎない中間色 */
       stroke-width: 1.2 !important;
       fill: transparent !important;
       font-weight: normal !important;
     }
 
     .editor-wrapper .ql-toolbar button.ql-bold svg path {
-      fill: #94a3b8 !important;
+      fill: #64748b !important; /* Bマークの塗りも中間色に */
       stroke: none !important;
     }
 
     .editor-wrapper .ql-toolbar button:hover svg path,
     .editor-wrapper .ql-toolbar button:hover svg line {
-      stroke: #475569 !important;
+      stroke: #1e293b !important; /* ホバー時はテキストに近い濃い色 */
     }
     .editor-wrapper .ql-toolbar button.ql-bold:hover svg path {
-      fill: #475569 !important;
+      fill: #1e293b !important;
     }
 
     .editor-wrapper .ql-container {
@@ -480,7 +480,7 @@
 
   <!-- 写真アップロード枠 -->
   <div class="section">
-    <div class="section-title">📸 今日の手書きノート（写真をパシャリ）</div>
+    <div class="section-title">📸 今日の手書きノート（写真をパシャリ）📸</div>
     <div class="note-text">今日手書きで書いたノートやメモの写真を貼り付けられます♪</div>
     
     <div class="photo-upload-area" onclick="document.getElementById('photoInput').click();">
