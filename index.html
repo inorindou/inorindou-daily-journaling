@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>メディテーション デイリージャーナリング</title>
   
-  <!-- Quill.js CSS -->
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
@@ -80,78 +77,72 @@
       color: #000000;
     }
 
-/* Quillエディタ＆ツールバーの控えめカスタマイズ */
+    /* ★ note風ツールバーと入力領域のスタイル★ */
     .editor-wrapper {
       border: 1px solid #cbd5e1;
       border-radius: 8px;
       overflow: hidden;
       background-color: #ffffff;
-      margin-top: 4px;
+      margin-top: 6px;
     }
     .editor-wrapper:focus-within {
       border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
-    .editor-wrapper .ql-toolbar {
-      border: none !important;
-      border-bottom: 1px solid #f1f5f9 !important;
+    .editor-toolbar {
       background-color: #ffffff;
-      padding: 4px 8px !important;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 6px 10px;
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
     }
-    
-    .editor-wrapper .ql-toolbar button {
-      width: 28px !important;
-      height: 28px !important;
-      padding: 2px !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      border-radius: 4px;
+    .toolbar-btn {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #334155;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
-
-    /* SVGアイコンのサイズ（18px）と中間色（#64748b）調整 */
-    .editor-wrapper .ql-toolbar button svg {
-      width: 18px !important;
-      height: 18px !important;
+    .toolbar-btn:hover {
+      background-color: #e2e8f0;
+      border-color: #94a3b8;
     }
-
-    .editor-wrapper .ql-toolbar button svg path,
-    .editor-wrapper .ql-toolbar button svg line {
-      stroke: #64748b !important; /* 薄すぎず濃すぎない中間色 */
-      stroke-width: 1.2 !important;
-      fill: transparent !important;
-      font-weight: normal !important;
+    .toolbar-tip {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-left: auto;
     }
-
-    .editor-wrapper .ql-toolbar button.ql-bold svg path {
-      fill: #64748b !important; /* Bマークの塗りも中間色に */
-      stroke: none !important;
-    }
-
-    .editor-wrapper .ql-toolbar button:hover svg path,
-    .editor-wrapper .ql-toolbar button:hover svg line {
-      stroke: #1e293b !important; /* ホバー時はテキストに近い濃い色 */
-    }
-    .editor-wrapper .ql-toolbar button.ql-bold:hover svg path {
-      fill: #1e293b !important;
-    }
-
-    .editor-wrapper .ql-container {
-      border: none !important;
+    .rich-editor {
+      min-height: 100px;
+      padding: 12px 14px;
       font-size: 0.95rem;
       font-family: inherit;
-      background-color: #ffffff;
-    }
-    .editor-wrapper .ql-editor {
-      min-height: 100px;
+      color: #1a1a1a;
+      outline: none;
+      white-space: pre-wrap;
+      word-break: break-word;
       line-height: 1.6;
     }
-    .editor-wrapper .ql-editor.ql-blank::before {
-      font-style: normal;
+    .rich-editor:focus {
+      background-color: #fafafa;
+    }
+    .rich-editor[placeholder]:empty:before {
+      content: attr(placeholder);
       color: #94a3b8;
+    }
+    .rich-editor a {
+      color: #2563eb;
+      text-decoration: underline;
+      font-weight: bold;
     }
 
     /* 日付入力欄のスタイル */
@@ -375,6 +366,11 @@
       color: #334155;
       line-height: 1.6;
     }
+    .display-body a {
+      color: #2563eb;
+      text-decoration: underline;
+      font-weight: bold;
+    }
 
     /* GAS設定モーダルのスタイル */
     .modal-overlay {
@@ -503,13 +499,24 @@
     <div style="margin-bottom: 20px;">
       <div class="section-title">三行日記（箇条書きでOK）</div>
       <div class="editor-wrapper">
-        <div id="threeLinesEditor"></div>
+        <div class="editor-toolbar">
+          <button type="button" class="toolbar-btn" onclick="toggleBold()"><b>B</b> 太字</button>
+          <button type="button" class="toolbar-btn" onclick="addLinkToSelection()">🔗 リンクにする</button>
+          <button type="button" class="toolbar-btn" onclick="removeLinkFromSelection()">❌ リンク解除</button>
+          <span class="toolbar-tip">💡文字を選択して装飾してね！</span>
+        </div>
+        <div id="threeLinesEditor" class="rich-editor" contenteditable="true" placeholder="朝：&#10;・&#10;&#10;昼：&#10;・&#10;&#10;夕：&#10;・"></div>
       </div>
     </div>
 
     <div class="section-title">フリーメモ</div>
     <div class="editor-wrapper">
-      <div id="freeMemoEditor"></div>
+      <div class="editor-toolbar">
+        <button type="button" class="toolbar-btn" onclick="toggleBold()"><b>B</b> 太字</button>
+        <button type="button" class="toolbar-btn" onclick="addLinkToSelection()">🔗 リンクにする</button>
+        <button type="button" class="toolbar-btn" onclick="removeLinkFromSelection()">❌ リンク解除</button>
+      </div>
+      <div id="freeMemoEditor" class="rich-editor" contenteditable="true" placeholder="・&#10;・"></div>
     </div>
   </div>
 
@@ -572,18 +579,10 @@
     </div>
   </div>
 
-  <!-- Quill.js JS -->
-  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-
   <!-- JavaScript -->
   <script>
     const STORAGE_KEY = 'nikkicho_gas_url';
     const ITEMS_STORAGE_KEY = 'nikkicho_custom_items';
-
-    // Quillのツールバー設定
-    const quillToolbarOptions = [
-      ['bold', 'link']
-    ];
 
     // デフォルトのこだわり項目定義
     const DEFAULT_ITEMS = [
@@ -599,9 +598,45 @@
     ];
 
     let currentItems = [];
-    let quillThreeLines = null;
-    let quillFreeMemo = null;
-    let dynamicQuillInstances = {};
+
+    // ★ リッチテキスト操作関数（太字・リンク生成・リンク解除） ★
+    function toggleBold() {
+      document.execCommand('bold', false, null);
+    }
+
+    function addLinkToSelection() {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
+        alert("リンクにしたい文字を先に選択（ドラッグ）してください♪");
+        return;
+      }
+
+      const url = prompt("埋め込みたいURLを入力してください（例: https://...）:");
+      if (url && url.trim() !== "") {
+        let validUrl = url.trim();
+        if (!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) {
+          validUrl = 'https://' + validUrl;
+        }
+        
+        document.execCommand('createLink', false, validUrl);
+        
+        const focusNode = selection.focusNode;
+        if (focusNode) {
+          const parentA = focusNode.parentElement.closest('a');
+          if (parentA) {
+            parentA.setAttribute('target', '_blank');
+            parentA.setAttribute('rel', 'noopener noreferrer');
+            parentA.style.color = '#2563eb';
+            parentA.style.textDecoration = 'underline';
+            parentA.style.fontWeight = 'bold';
+          }
+        }
+      }
+    }
+
+    function removeLinkFromSelection() {
+      document.execCommand('unlink', false, null);
+    }
 
     // GAS URLの取得用関数
     function getGasUrl() {
@@ -628,21 +663,6 @@
       closeSettings();
       alert("GAS URLを保存しました！✨");
       fetchLatestData();
-    }
-
-    // 固定エディタの初期化
-    function initFixedEditors() {
-      quillThreeLines = new Quill('#threeLinesEditor', {
-        theme: 'snow',
-        placeholder: '朝：\n・\n\n昼：\n・\n\n夕：\n・',
-        modules: { toolbar: quillToolbarOptions }
-      });
-
-      quillFreeMemo = new Quill('#freeMemoEditor', {
-        theme: 'snow',
-        placeholder: '・\n・',
-        modules: { toolbar: quillToolbarOptions }
-      });
     }
 
     // 項目リストの読み込み＆ローカルストレージ同期
@@ -672,7 +692,6 @@
     function renderDynamicSections() {
       const container = document.getElementById('dynamicSectionsContainer');
       container.innerHTML = "";
-      dynamicQuillInstances = {};
 
       currentItems.forEach((item, index) => {
         const div = document.createElement('div');
@@ -691,21 +710,17 @@
         const editorId = `editor_item_${index}`;
         html += `
           <div class="editor-wrapper">
-            <div id="${editorId}"></div>
+            <div class="editor-toolbar">
+              <button type="button" class="toolbar-btn" onclick="toggleBold()"><b>B</b> 太字</button>
+              <button type="button" class="toolbar-btn" onclick="addLinkToSelection()">🔗 リンクにする</button>
+              <button type="button" class="toolbar-btn" onclick="removeLinkFromSelection()">❌ リンク解除</button>
+            </div>
+            <div id="${editorId}" class="rich-editor" contenteditable="true" placeholder="${escapeHtml(item.placeholder || '・')}"></div>
           </div>
         `;
 
         div.innerHTML = html;
         container.appendChild(div);
-
-        // Quillエディタを生成
-        const quillInstance = new Quill(`#${editorId}`, {
-          theme: 'snow',
-          placeholder: item.placeholder || '・',
-          modules: { toolbar: quillToolbarOptions }
-        });
-
-        dynamicQuillInstances[index] = quillInstance;
       });
     }
 
@@ -873,13 +888,12 @@
     }
 
     function clearForm() {
-      if (quillThreeLines) quillThreeLines.setText('');
-      if (quillFreeMemo) quillFreeMemo.setText('');
+      document.getElementById('threeLinesEditor').innerHTML = "";
+      document.getElementById('freeMemoEditor').innerHTML = "";
 
-      Object.keys(dynamicQuillInstances).forEach(key => {
-        if (dynamicQuillInstances[key]) {
-          dynamicQuillInstances[key].setText('');
-        }
+      currentItems.forEach((item, index) => {
+        const el = document.getElementById(`editor_item_${index}`);
+        if (el) el.innerHTML = "";
       });
 
       base64PhotoData = "";
@@ -901,7 +915,6 @@
         dateInput.value = `${yyyy}-${mm}-${dd}`;
       }
 
-      initFixedEditors();
       loadItems();
 
       if (!getGasUrl()) {
@@ -911,12 +924,13 @@
       }
     });
 
-    // Quillの入力内容を取得（空文字判定付き）
-    function getQuillHtml(quillInstance) {
-      if (!quillInstance) return "";
-      const text = quillInstance.getText().trim();
+    // エディタの内容HTML取得用関数（入力判定付き）
+    function getEditorHtml(editorId) {
+      const el = document.getElementById(editorId);
+      if (!el) return "";
+      const text = el.innerText.trim();
       if (!text) return "";
-      return quillInstance.root.innerHTML;
+      return el.innerHTML;
     }
 
     async function sendToSpreadsheet() {
@@ -934,16 +948,15 @@
 
       const payload = {
         journalDate: document.getElementById('journalDate').value,
-        threeLines: getQuillHtml(quillThreeLines),
-        freeMemo: getQuillHtml(quillFreeMemo),
+        threeLines: getEditorHtml('threeLinesEditor'),
+        freeMemo: getEditorHtml('freeMemoEditor'),
         photoData: base64PhotoData,
         photoName: photoFileName
       };
 
       // 動的カスタマイズ項目の値をセット
       currentItems.forEach((item, index) => {
-        const qInstance = dynamicQuillInstances[index];
-        payload[item.title] = getQuillHtml(qInstance);
+        payload[item.title] = getEditorHtml(`editor_item_${index}`);
       });
 
       try {
